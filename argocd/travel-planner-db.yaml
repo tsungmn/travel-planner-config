@@ -7,7 +7,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/tsungmnli/travel-planner-config.git
+    repoURL: https://github.com/tsungmn/travel-planner-config.git
     targetRevision: main
     path: db
   destination:

@@ -24,7 +24,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: migrate
-          image: ghcr.io/tsungmnli/travel-planner-api
+          image: ghcr.io/tsungmn/travel-planner-api
           command: ["python", "-m", "app.migrate"]
           envFrom:
             - configMapRef:
@@ -37,7 +37,7 @@ spec:
               drop: ["ALL"]
       containers:
         - name: api
-          image: ghcr.io/tsungmnli/travel-planner-api
+          image: ghcr.io/tsungmn/travel-planner-api
           ports:
             - containerPort: 8000
           envFrom:

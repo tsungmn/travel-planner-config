@@ -8,10 +8,10 @@ resources:
 
 # 배포 = 이 태그를 바꾸는 커밋 (CI 가 갱신)
 images:
-  - name: ghcr.io/tsungmnli/travel-planner-api
-    newTag: "731d1957b62712c1cadae79b72fd7fc781ba1bc8"
-  - name: ghcr.io/tsungmnli/travel-planner-web
-    newTag: "<TODO: 커밋 SHA>"
+  - name: ghcr.io/tsungmn/travel-planner-api
+    newTag: "d6a4a062fa3a11b93fe9624d5e025eb76a7f182a"
+  - name: ghcr.io/tsungmn/travel-planner-web
+    newTag: "9a0ca499297b2f51fd19bc0dc8b8d278482f7f2a"
 
 # 값이 바뀌면 이름 해시가 바뀌어 파드가 자동으로 재시작됨
 configMapGenerator:
@@ -21,7 +21,7 @@ configMapGenerator:
       - PUBLIC_URL=https://travel.tsungmn.com
       - COOKIE_SECURE=true
       - DOCS_ENABLED=false
-      - NOMINATIM_USER_AGENT=travel-planner-api/0.1 (contact: chunzhi23@g.skku.edu)
+      - NOMINATIM_USER_AGENT=travel-planner-api/0.1 (contact: jmlee@tsungmn.com)
   - name: web-config
     literals:
       - API_ORIGIN=http://api # 서버 사이드 렌더링에서 API 를 부르는 클러스터 내부 주소

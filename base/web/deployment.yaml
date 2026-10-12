@@ -17,7 +17,7 @@ spec:
         - name: ghcr-pull
       containers:
         - name: web
-          image: ghcr.io/tsungmnli/travel-planner-web
+          image: ghcr.io/tsungmn/travel-planner-web
           ports:
             - containerPort: 3000
           envFrom:
