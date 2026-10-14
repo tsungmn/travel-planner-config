@@ -11,7 +11,7 @@ images:
   - name: ghcr.io/tsungmn/travel-planner-api
     newTag: "e4dc33880d9aab19d1a17831acc010d29ecf8e21"
   - name: ghcr.io/tsungmn/travel-planner-web
-    newTag: "6c9294706968211fd7aa195ba762e3c48c04f290"
+    newTag: "65caaa8ad4fd5a101e9e401d13e746e81ab58537"
 
 # 값이 바뀌면 이름 해시가 바뀌어 파드가 자동으로 재시작됨
 configMapGenerator:
