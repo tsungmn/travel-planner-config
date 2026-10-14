@@ -9,7 +9,7 @@ resources:
 # 배포 = 이 태그를 바꾸는 커밋 (CI 가 갱신)
 images:
   - name: ghcr.io/tsungmn/travel-planner-api
-    newTag: "e4dc33880d9aab19d1a17831acc010d29ecf8e21"
+    newTag: "79700bc097777e89506e8a73e40938dd6c5640fe"
   - name: ghcr.io/tsungmn/travel-planner-web
     newTag: "65caaa8ad4fd5a101e9e401d13e746e81ab58537"
 
