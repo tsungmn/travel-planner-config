@@ -1,69 +1,23 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: api
+  name: api-deployment
 spec:
-  replicas: 1 # Nominatim 호출 간격 제한이 프로세스 안에서만 지켜져서 1개로 고정
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1 # 새 파드를 먼저 띄우고
-      maxUnavailable: 0 # readyz 통과 전까지 옛 파드는 유지 (무중단)
   selector:
     matchLabels:
       app.kubernetes.io/name: api
+  replicas: 1
   template:
     metadata:
       labels:
         app.kubernetes.io/name: api
     spec:
-      enableServiceLinks: false # Service 이름 기반 환경 변수(POSTGRES_PORT 등) 주입 방지
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 10001 # Dockerfile 의 appuser UID (이름만으로는 non-root 검증이 안 됨)
-        seccompProfile:
-          type: RuntimeDefault
-      initContainers:
-        - name: migrate
-          image: tsungmn/travel-planner-api
-          command: ["python", "-m", "app.migrate"]
-          envFrom:
-            - configMapRef:
-                name: api-config
-            - secretRef:
-                name: api-secret
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
       containers:
-        - name: api
-          image: tsungmn/travel-planner-api
+        - image: tsungmn/travel-planner-api
+          imagePullPolicy: Always
+          name: api
           ports:
             - containerPort: 8000
           envFrom:
-            - configMapRef:
-                name: api-config
             - secretRef:
-                name: api-secret
-          readinessProbe:
-            httpGet:
-              path: /api/readyz # DB 연결까지 확인
-              port: 8000
-            periodSeconds: 10
-          livenessProbe:
-            httpGet:
-              path: /api/healthz # DB 와 무관하게 프로세스만 확인
-              port: 8000
-            initialDelaySeconds: 10
-            periodSeconds: 20
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              memory: 512Mi # argon2 해시가 요청당 수십 MB 를 쓰므로 여유를 둠
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
+                name: travel-planner-tsungmn
