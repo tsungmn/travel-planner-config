@@ -5,7 +5,10 @@ metadata:
 spec:
   replicas: 1 # Nominatim 호출 간격 제한이 프로세스 안에서만 지켜져서 1개로 고정
   strategy:
-    type: Recreate # 롤링 업데이트 중 파드 2개가 동시에 뜨는 것 방지
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1 # 새 파드를 먼저 띄우고
+      maxUnavailable: 0 # readyz 통과 전까지 옛 파드는 유지 (무중단)
   selector:
     matchLabels:
       app.kubernetes.io/name: api
@@ -41,10 +44,8 @@ spec:
           ports:
             - containerPort: 8000
           envFrom:
-            - configMapRef:
-                name: api-config
             - secretRef:
-                name: api-secret
+                name: travel-planner-tsungmn
           readinessProbe:
             httpGet:
               path: /api/readyz # DB 연결까지 확인

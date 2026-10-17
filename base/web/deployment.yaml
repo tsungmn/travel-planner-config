@@ -20,9 +20,6 @@ spec:
           image: ghcr.io/tsungmn/travel-planner-web
           ports:
             - containerPort: 3000
-          envFrom:
-            - configMapRef:
-                name: web-config
           readinessProbe:
             tcpSocket:
               port: 3000

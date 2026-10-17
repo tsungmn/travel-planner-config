@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+namespace: travel-planner-prod
+resources:
+  - ../../../base/web
+
+patches:
+  - path: domain.json
+    target:
+      kind: Ingress
+      name: web-ingress
+
+images:
+  - name: ghcr.io/tsungmn/travel-planner-web
+    newTag: "c40aea2e57bdcc014339ed3cdc2090d13e3d7e09"
