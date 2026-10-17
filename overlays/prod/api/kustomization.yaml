@@ -13,5 +13,5 @@ patches:
       name: api-ingress
 
 images:
-  - name: ghcr.io/tsungmn/travel-planner-api
-    newTag: "9d4fe9e8ee6d4617c34a7bcec9ca3692c679544e"
+  - name: tsungmn/travel-planner-api
+    newTag: "fff176eeadea5cf9225d6ddca3c8ba4dcc7e653c"
