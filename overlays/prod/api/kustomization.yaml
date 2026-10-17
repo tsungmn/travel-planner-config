@@ -2,16 +2,16 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: travel-planner-prod
 resources:
-  - namespace.yaml
-  - secret.yaml
-  - ../../../base/api
+- namespace.yaml
+- secret.yaml
+- ../../../base/api
 
 patches:
-  - patch: domain.json
-    target:
-      kind: Ingress
-      name: api-ingress
+- patch: domain.json
+  target:
+    kind: Ingress
+    name: api-ingress
 
 images:
-  - name: tsungmn/travel-planner-api
-    newTag: "fff176eeadea5cf9225d6ddca3c8ba4dcc7e653c"
+- name: tsungmn/travel-planner-api
+  newTag: 90001d10588d8589b3c12e7fb01e3bb1b8aeba41
