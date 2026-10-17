@@ -13,13 +13,14 @@ spec:
         app.kubernetes.io/name: web
     spec:
       enableServiceLinks: false
-      imagePullSecrets:
-        - name: ghcr-pull
       containers:
         - name: web
-          image: ghcr.io/tsungmn/travel-planner-web
+          image: tsungmn/travel-planner-web
           ports:
             - containerPort: 3000
+          envFrom:
+            - configMapRef:
+                name: api-config
           readinessProbe:
             tcpSocket:
               port: 3000

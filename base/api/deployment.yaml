@@ -18,8 +18,6 @@ spec:
         app.kubernetes.io/name: api
     spec:
       enableServiceLinks: false # Service 이름 기반 환경 변수(POSTGRES_PORT 등) 주입 방지
-      imagePullSecrets:
-        - name: ghcr-pull # 이미지가 공개면 삭제
       securityContext:
         runAsNonRoot: true
         runAsUser: 10001 # Dockerfile 의 appuser UID (이름만으로는 non-root 검증이 안 됨)
@@ -27,7 +25,7 @@ spec:
           type: RuntimeDefault
       initContainers:
         - name: migrate
-          image: ghcr.io/tsungmn/travel-planner-api
+          image: tsungmn/travel-planner-api
           command: ["python", "-m", "app.migrate"]
           envFrom:
             - configMapRef:
@@ -40,12 +38,14 @@ spec:
               drop: ["ALL"]
       containers:
         - name: api
-          image: ghcr.io/tsungmn/travel-planner-api
+          image: tsungmn/travel-planner-api
           ports:
             - containerPort: 8000
           envFrom:
+            - configMapRef:
+                name: api-config
             - secretRef:
-                name: travel-planner-tsungmn
+                name: api-secret
           readinessProbe:
             httpGet:
               path: /api/readyz # DB 연결까지 확인
