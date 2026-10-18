@@ -5,6 +5,7 @@ resources:
   - namespace.yaml
   - configmap.yaml
   - secret.yaml
+  - issuer.yaml
   - ../../base/api
 
 patches:
