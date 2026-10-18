@@ -20,4 +20,4 @@ spec:
             - containerPort: 8000
           envFrom:
             - secretRef:
-                name: travel-planner-tsungmn
+                name: api-secret

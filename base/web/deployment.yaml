@@ -1,42 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: web
+  name: web-deployment
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: web
+  replicas: 1
   template:
     metadata:
       labels:
         app.kubernetes.io/name: web
     spec:
-      enableServiceLinks: false
       containers:
-        - name: web
-          image: tsungmn/travel-planner-web
+        - image: tsungmn/travel-planner-web
+          imagePullPolicy: Always
+          name: web
           ports:
             - containerPort: 3000
-          envFrom:
-            - configMapRef:
-                name: api-config
-          readinessProbe:
-            tcpSocket:
-              port: 3000
-            periodSeconds: 10
-          livenessProbe:
-            tcpSocket:
-              port: 3000
-            initialDelaySeconds: 15
-            periodSeconds: 20
-          resources:
-            requests:
-              cpu: 50m
-              memory: 128Mi
-            limits:
-              memory: 384Mi
-          securityContext:
-            allowPrivilegeEscalation: false
-            capabilities:
-              drop: ["ALL"]
