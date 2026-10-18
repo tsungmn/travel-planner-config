@@ -23,3 +23,18 @@ spec:
                 name: api-config
             - secretRef:
                 name: api-secret
+          readinessProbe:
+            httpGet:
+              path: /api/readyz
+              port: 8000
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 3
+            failureThreshold: 3
+          livenessProbe:
+            httpGet:
+              path: /api/healthz
+              port: 8000
+            initialDelaySeconds: 20
+            periodSeconds: 20
+            failureThreshold: 3
