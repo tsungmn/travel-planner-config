@@ -130,3 +130,44 @@ curl -sS -i https://travel.tsungmn.com/api/readyz
 | nginx 화면의 404 | Ingress의 주소나 경로가 맞지 않습니다. | `kubectl get ingress` |
 
 DNS, 인증서 문제는 [루트 README](../README.md)의 7장을 봅니다.
+
+---
+
+## 6. 보안 설정 (권장)
+
+### ① 접속자 IP가 제대로 보이는지 확인
+
+로그인, 가입, 메일 요청의 횟수 제한은 접속자 **IP별**로 셉니다. api는 앞단의 ingress-nginx가 알려 주는 접속자 주소(`X-Forwarded-For`의 맨 오른쪽 값)를 사용합니다. 이 값이 서버 내부 주소(10.x.x.x 같은 사설 주소)로 보이면 **모든 사용자가 한 사람처럼 세어져서** 서로의 제한에 걸립니다.
+
+새 버전을 배포한 뒤 로그인을 한 번 시도하고 확인합니다.
+
+```bash
+kubectl -n travel-planner-prod logs deploy/api-deployment | grep clientip
+```
+
+- 아무것도 나오지 않으면 정상입니다.
+- `클라이언트 IP 가 사설 주소` 경고가 나오면, 접속자 주소가 서버에서 바뀌어 들어오고 있는 것입니다. ingress-nginx가 접속자 주소를 그대로 받도록 바꿉니다.
+
+```bash
+kubectl -n ingress-nginx get svc        # ingress-nginx 서비스 이름 확인
+kubectl -n ingress-nginx patch svc ingress-nginx-controller \
+  -p '{"spec":{"externalTrafficPolicy":"Local"}}'
+```
+
+> 나중에 Cloudflare의 구름을 주황색(프록시)으로 바꾸면 접속자 주소가 한 단계 더 거쳐서 들어옵니다. 그때는 이 항목을 다시 봐야 하니 api 저장소의 `TRUSTED_PROXY_HOPS` 설명을 확인하세요.
+
+### ② 봇 방지(Cloudflare Turnstile) 켜기 (선택)
+
+가입, 비밀번호 찾기, 인증 메일 재전송에 "사람인지 확인"을 붙입니다. 평소에는 보이지 않고, 의심스러울 때만 확인 창이 뜹니다. **순서가 중요합니다.** api가 먼저 검사를 켜면, 아직 확인 위젯이 없는 웹에서는 가입이 전부 실패합니다.
+
+1. Cloudflare 대시보드 → Turnstile → 위젯 추가. 도메인은 `travel.tsungmn.com`, 모드는 Managed로 합니다. **사이트 키**(공개)와 **시크릿 키**(비밀)가 나옵니다.
+2. web 저장소의 GitHub 설정 → Secrets and variables → Actions → **Variables**에 `TURNSTILE_SITE_KEY`로 사이트 키를 넣고, web의 main을 다시 빌드합니다. (사이트 키는 빌드할 때 화면에 들어갑니다)
+3. Vault의 `kv/travel-planner-tsungmn`에 `TURNSTILE_SECRET_KEY`로 시크릿 키를 넣습니다.
+4. 이 저장소의 `overlays/api/secret.yaml`에 `TURNSTILE_SECRET_KEY` 줄을 추가해서 push합니다. **Vault에 값이 없는 상태에서 push하면 ArgoCD가 멈춥니다.** (②의 주의와 같습니다)
+5. api가 새 값을 읽도록 다시 시작합니다.
+
+```bash
+kubectl -n travel-planner-prod rollout restart deploy/api-deployment
+```
+
+확인은 브라우저에서 가입을 한 번 해 보는 것입니다. 키를 넣기 전과 똑같이 동작해야 하고, 개발자 도구의 Network 탭에서 `register` 요청 본문에 `turnstile_token`이 보이면 켜진 것입니다. 문제가 생겨서 끄려면 Vault와 `secret.yaml`에서 `TURNSTILE_SECRET_KEY`를 지우고 api를 다시 시작하면 됩니다.
