@@ -14,4 +14,4 @@ patches:
 
 images:
 - name: tsungmn/travel-planner-api
-  newTag: f4e5dbf0c30a5dfc238d2393119a4d2ea39024d3
+  newTag: 672480d004cc9d9fe481633eb61896619a304907
