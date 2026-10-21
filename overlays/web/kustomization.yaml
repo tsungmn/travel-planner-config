@@ -12,4 +12,4 @@ patches:
 
 images:
   - name: tsungmn/travel-planner-web
-    newTag: "9662f0494a083639fb3a9d3bfedf94d66a6ae7b4"
+    newTag: "fc6a7184fbe39bf643affc75d8b00047243bf0c2"
